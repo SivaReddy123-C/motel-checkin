@@ -92,7 +92,7 @@
   </div>
 </div>
 
-<!-- 🔥 Firebase SDKs (MUST be here, not in head) -->
+<!-- 🔥 Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
@@ -119,6 +119,7 @@ async function confirmCheckin() {
   ).value;
 
   try {
+    // Read availability
     const docRef = db.collection("availability").doc("today");
     const docSnap = await docRef.get();
 
@@ -135,14 +136,22 @@ async function confirmCheckin() {
       return;
     }
 
-    // Random assignment
+    // Random room assignment
     const index = Math.floor(Math.random() * rooms.length);
     const assignedRoom = rooms[index];
 
-    // Remove assigned room from Firestore
+    // Remove assigned room from availability
     rooms.splice(index, 1);
     await docRef.update({
       [roomType]: rooms
+    });
+
+    // ✅ SAVE CHECK-IN FOR ADMIN PAGE
+    await db.collection("checkins").add({
+      room: assignedRoom,
+      type: roomType,
+      time: new Date().toLocaleString(),
+      status: "Checked-in"
     });
 
     // Redirect to access page
@@ -150,8 +159,8 @@ async function confirmCheckin() {
       "access.html?room=" + assignedRoom + "&code=4829";
 
   } catch (error) {
-    alert("Check-in failed. Please contact desk.");
     console.error(error);
+    alert("Check-in failed. Please contact desk.");
   }
 }
 </script>
