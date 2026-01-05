@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify Reservation</title>
+
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  background-color: #f7f7f7;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 400px;
+  margin: 60px auto;
+  background-color: #ffffff;
+  padding: 24px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.room {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.code {
+  margin-bottom: 20px;
+}
+
+.label {
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #555;
+}
+
+.pin {
+  font-size: 36px;
+  font-weight: bold;
+  letter-spacing: 4px;
+}
+
+.validity {
+  font-size: 14px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.instruction {
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.help {
+  font-size: 14px;
+}
+  </style>
+</head>
+<body>
+
+  <div class="container">
+  <h1>Your room access</h1>
+
+  <div class="room">
+    Room <strong><span id="room"></span></strong>
+
+  </div>
+
+  <div class="code">
+    <div class="label">Door code</div>
+    <div class="pin" id="code"></div>
+
+  </div>
+
+  <div class="validity">
+    Valid from <strong>Sep 3, 2:00 PM</strong><br />
+    Until <strong>Sep 4, 11:00 AM</strong>
+  </div>
+
+  <div class="instruction">
+    Enter this code on the keypad to unlock your door.
+  </div>
+
+  <div class="help">
+    Having trouble? Call <strong>254-883-3700</strong>
+  </div>
+</div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+document.getElementById("room").textContent = params.get("room");
+document.getElementById("code").textContent = params.get("code");
+  </script>
+
+</body>
+</html>

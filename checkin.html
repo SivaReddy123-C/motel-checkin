@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify Reservation</title>
+
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  background-color: #f7f7f7;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 400px;
+  margin: 60px auto;
+  background-color: #ffffff;
+  padding: 24px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.ready {
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.datetime {
+  font-size: 14px;
+  margin-bottom: 24px;
+  color: #333;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  background-color: #0071c2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.help {
+  margin-top: 24px;
+  font-size: 14px;
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+  <h1>Confirm your check-in</h1>
+
+  <p class="ready">Your room is ready.</p>
+
+  <div class="datetime">
+    Check-in for <strong>Tuesday, Sept 3</strong><br />
+    Available from <strong>2:00 PM</strong>
+  </div>
+
+  <button onclick="confirmCheckin()">Confirm check-in</button>
+
+  <div class="help">
+    Need help? Call <strong>254-883-3700</strong>
+  </div>
+</div>
+
+  <script>
+    function confirmCheckin() {
+  const params = new URLSearchParams(window.location.search);
+  const room = params.get("room");
+  const code = params.get("code");
+
+  window.location.href = "access.html?room=" + room + "&code=" + code;
+;
+}
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify Reservation</title>
+
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  background-color: #f7f7f7;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 400px;
+  margin: 60px auto;
+  background-color: #ffffff;
+  padding: 24px;
+  border-radius: 8px;
+}
+
+h1 {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+p {
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #0071c2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.error {
+  margin-top: 16px;
+  color: #c00;
+  font-size: 14px;
+}
+
+.help {
+  margin-top: 24px;
+  font-size: 14px;
+  text-align: center;
+}
+  </style>
+</head>
+<body>
+
+  <div class="container">
+  <h1>Verify your reservation</h1>
+
+  <p>Enter your phone number or confirmation number to continue.</p>
+
+  <input
+    type="text"
+    id="verifyInput"
+    placeholder="Phone number or confirmation number"
+  />
+
+  <button onclick="verifyReservation()">Continue</button>
+
+  <div id="error" class="error"></div>
+
+  <div class="help">
+    Having trouble? Call <strong>254-883-3700</strong>
+  </div>
+</div>
+
+  <script>
+    // MOCK RESERVATION DATA (testing only)
+const reservations = [
+  { phone: "5551234", confirmation: "ABC123" },
+  { phone: "5559876", confirmation: "XYZ789" }
+];
+
+function verifyReservation() {
+  const input = document.getElementById("verifyInput").value.trim();
+  const errorDiv = document.getElementById("error");
+
+  const found = reservations.find(
+    r => r.phone === input || r.confirmation === input
+  );
+
+  if (found) {
+  window.location.href = "checkin.html?room=204&code=4829";
+;
+
+}
+ else {
+    errorDiv.textContent =
+      "We couldn’t find your reservation. Please call 254-883-3700 for help.";
+  }
+}
+
+  </script>
+
+</body>
+</html>
