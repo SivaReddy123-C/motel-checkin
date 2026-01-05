@@ -121,7 +121,8 @@ h1 {
   const now = new Date();
 
   const checkout = new Date();
-  checkout.setDate(checkout.getDate() + 1);
+  checkout.setDate(checkout.getDate() - 1);
+
   checkout.setHours(11, 0, 0, 0);
 
   if (now <= checkout) {
@@ -137,4 +138,5 @@ h1 {
 
 </body>
 </html>
+
 
