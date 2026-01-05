@@ -1,50 +1,60 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Admin – Check-in Status</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin – Today’s Check-ins</title>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #f7f7f7;
+      margin: 0;
       padding: 20px;
     }
 
     h1 {
-      font-size: 20px;
-      margin-bottom: 16px;
+      text-align: center;
+      margin-bottom: 20px;
     }
 
     table {
       width: 100%;
-      border-collapse: collapse;
+      max-width: 600px;
+      margin: auto;
       background: white;
+      border-collapse: collapse;
     }
 
     th, td {
-      padding: 10px;
+      padding: 12px;
       border-bottom: 1px solid #ddd;
-      font-size: 14px;
       text-align: left;
+      font-size: 14px;
     }
 
     th {
-      background: #eee;
+      background: #0071c2;
+      color: white;
     }
 
     .empty {
-      font-size: 14px;
-      color: #555;
+      text-align: center;
+      color: #666;
+      margin-top: 40px;
     }
   </style>
 </head>
+
 <body>
 
 <h1>Today’s Check-ins</h1>
 
-<table id="table" style="display:none;">
+<table id="checkinTable" style="display:none;">
   <thead>
     <tr>
       <th>Room</th>
@@ -53,34 +63,65 @@
       <th>Status</th>
     </tr>
   </thead>
-  <tbody id="rows"></tbody>
+  <tbody id="checkinBody"></tbody>
 </table>
 
-<div class="empty" id="empty">
+<div class="empty" id="emptyMsg">
   No check-ins yet.
 </div>
 
+<!-- Firebase Init -->
 <script>
-  const data = JSON.parse(localStorage.getItem("checkins")) || [];
+  const firebaseConfig = {
+    apiKey: "AIzaSyAg1reshxedRsepC2K7x9HLDFrxFe1i9KY",
+    authDomain: "motel-checkin-test.firebaseapp.com",
+    projectId: "motel-checkin-test",
+    storageBucket: "motel-checkin-test.appspot.com",
+    messagingSenderId: "861557488352",
+    appId: "1:861557488352:web:d102637f4cfd0359a6ee85"
+  };
 
-  if (data.length > 0) {
-    document.getElementById("table").style.display = "table";
-    document.getElementById("empty").style.display = "none";
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
 
-    const rows = document.getElementById("rows");
+<script>
+async function loadCheckins() {
+  try {
+    const snapshot = await db.collection("checkins").orderBy("time").get();
 
-    data.forEach(item => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${item.room}</td>
-        <td>${item.type}</td>
-        <td>${item.time}</td>
-        <td>${item.status}</td>
+    if (snapshot.empty) {
+      return;
+    }
+
+    document.getElementById("emptyMsg").style.display = "none";
+    document.getElementById("checkinTable").style.display = "table";
+
+    const tbody = document.getElementById("checkinBody");
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const row = document.createElement("tr");
+
+      row.innerHTML = `
+        <td>${data.room}</td>
+        <td>${data.type}</td>
+        <td>${data.time}</td>
+        <td>${data.status}</td>
       `;
-      rows.appendChild(tr);
+
+      tbody.appendChild(row);
     });
+
+  } catch (e) {
+    console.error(e);
+    alert("Failed to load admin data.");
   }
+}
+
+loadCheckins();
 </script>
 
 </body>
 </html>
+
