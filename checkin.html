@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -74,7 +73,6 @@
     Available from <strong>2:00 PM</strong>
   </div>
 
-  <!-- ROOM TYPE SELECTION -->
   <div class="room-type">
     <label>
       <input type="radio" name="roomType" value="single" checked>
@@ -94,59 +92,69 @@
   </div>
 </div>
 
-<script>
-function confirmCheckin() {
-  
+<!-- 🔥 Firebase SDKs (MUST be here, not in head) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-  // Get selected room type
+<!-- 🔥 Firebase Init -->
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAg1reshxedRsepC2K7x9HLDFrxFe1i9KY",
+    authDomain: "motel-checkin-test.firebaseapp.com",
+    projectId: "motel-checkin-test",
+    storageBucket: "motel-checkin-test.appspot.com",
+    messagingSenderId: "861557488352",
+    appId: "1:861557488352:web:d102637f4cfd0359a6ee85"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
+
+<!-- ✅ Check-in Logic -->
+<script>
+async function confirmCheckin() {
   const roomType = document.querySelector(
     'input[name="roomType"]:checked'
   ).value;
 
-  // Load available rooms set by owner
-  const stored = JSON.parse(localStorage.getItem("availableRooms"));
+  try {
+    const docRef = db.collection("availability").doc("today");
+    const docSnap = await docRef.get();
 
-  if (!stored || !stored[roomType] || stored[roomType].length === 0) {
-    alert("No rooms available for this type. Please contact the desk.");
-    return;
+    if (!docSnap.exists) {
+      alert("No rooms available. Please contact desk.");
+      return;
+    }
+
+    const data = docSnap.data();
+    const rooms = data[roomType];
+
+    if (!rooms || rooms.length === 0) {
+      alert("No rooms available for this type. Please contact desk.");
+      return;
+    }
+
+    // Random assignment
+    const index = Math.floor(Math.random() * rooms.length);
+    const assignedRoom = rooms[index];
+
+    // Remove assigned room from Firestore
+    rooms.splice(index, 1);
+    await docRef.update({
+      [roomType]: rooms
+    });
+
+    // Redirect to access page
+    window.location.href =
+      "access.html?room=" + assignedRoom + "&code=4829";
+
+  } catch (error) {
+    alert("Check-in failed. Please contact desk.");
+    console.error(error);
   }
-
-  // Randomly select a room
-  const rooms = stored[roomType];
-  const index = Math.floor(Math.random() * rooms.length);
-  const assignedRoom = rooms[index];
-
-  // Remove assigned room so it cannot be reused
-  rooms.splice(index, 1);
-  stored[roomType] = rooms;
-
-  // Save updated availability
-  localStorage.setItem("availableRooms", JSON.stringify(stored));
-
-  // ✅ LOG CHECK-IN FOR ADMIN PAGE
-  const checkins = JSON.parse(localStorage.getItem("checkins")) || [];
-
-  checkins.push({
-    room: assignedRoom,
-    type: roomType,
-    time: new Date().toLocaleString(),
-    status: "Checked-in"
-  });
-
-  localStorage.setItem("checkins", JSON.stringify(checkins));
-
-  console.log("Checkins saved:", localStorage.getItem("checkins"));
-
-  // Redirect to access page (MUST BE LAST)
-  window.location.href =
-    "access.html?room=" + assignedRoom + "&code=4829";
 }
 </script>
 
-
 </body>
 </html>
-
-
-
-
