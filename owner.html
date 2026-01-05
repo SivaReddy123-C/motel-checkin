@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+
+  <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
   <meta charset="UTF-8">
   <title>Owner – Update Available Rooms</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -74,21 +79,62 @@
   <div class="status" id="status"></div>
 </div>
 
+
 <script>
-  // Load existing data if present
-  const saved = JSON.parse(localStorage.getItem("availableRooms"));
-  if (saved) {
-    document.getElementById("singleRooms").value = saved.single.join(", ");
-    document.getElementById("doubleRooms").value = saved.double.join(", ");
-  }
+  // 🔥 Firebase config (PASTE YOUR REAL CONFIG HERE)
+  const firebaseConfig = {
+  apiKey: "AIzaSyAg1reshxedRsepC2K7x9HLDFrxFe1i9KY",
+  authDomain: "motel-checkin-test.firebaseapp.com",
+  projectId: "motel-checkin-test",
+  storageBucket: "motel-checkin-test.firebasestorage.app",
+  messagingSenderId: "861557488352",
+  appId: "1:861557488352:web:d102637f4cfd0359a6ee85",
+  measurementId: "G-PNXPN4DQC8"
+
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
+
+
+<script>
+  
 
   function saveRooms() {
-    const single = document
-      .getElementById("singleRooms")
-      .value
-      .split(",")
-      .map(r => r.trim())
-      .filter(Boolean);
+    <script>
+async function saveRooms() {
+  const single = document
+    .getElementById("singleRooms")
+    .value
+    .split(",")
+    .map(r => Number(r.trim()))
+    .filter(Boolean);
+
+  const double = document
+    .getElementById("doubleRooms")
+    .value
+    .split(",")
+    .map(r => Number(r.trim()))
+    .filter(Boolean);
+
+  try {
+    await db.collection("availability").doc("today").set({
+      single: single,
+      double: double,
+      updatedAt: new Date()
+    });
+
+    document.getElementById("status").textContent =
+      "Rooms saved to cloud successfully.";
+  } catch (error) {
+    alert("Failed to save rooms. Check internet.");
+    console.error(error);
+  }
+}
+</script>
+
 
     const double = document
       .getElementById("doubleRooms")
