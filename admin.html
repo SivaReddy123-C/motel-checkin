@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Admin – Check-in Status</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    th {
+      background: #eee;
+    }
+
+    .empty {
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Today’s Check-ins</h1>
+
+<table id="table" style="display:none;">
+  <thead>
+    <tr>
+      <th>Room</th>
+      <th>Type</th>
+      <th>Time</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody id="rows"></tbody>
+</table>
+
+<div class="empty" id="empty">
+  No check-ins yet.
+</div>
+
+<script>
+  const data = JSON.parse(localStorage.getItem("checkins")) || [];
+
+  if (data.length > 0) {
+    document.getElementById("table").style.display = "table";
+    document.getElementById("empty").style.display = "none";
+
+    const rows = document.getElementById("rows");
+
+    data.forEach(item => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${item.room}</td>
+        <td>${item.type}</td>
+        <td>${item.time}</td>
+        <td>${item.status}</td>
+      `;
+      rows.appendChild(tr);
+    });
+  }
+</script>
+
+</body>
+</html>
