@@ -13,6 +13,14 @@
   padding: 0;
 }
 
+.expired {
+  font-size: 16px;
+  color: #c00;
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+
 .container {
   max-width: 400px;
   margin: 60px auto;
@@ -78,6 +86,11 @@ h1 {
     <div class="label">Door code</div>
     <div class="pin" id="code"></div>
 
+<div class="expired" id="expiredMessage" style="display:none;">
+  Access expired. Please contact desk.
+</div>
+
+
   </div>
 
   <div class="validity">
@@ -95,10 +108,33 @@ h1 {
 </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-document.getElementById("room").textContent = params.get("room");
-document.getElementById("code").textContent = params.get("code");
-  </script>
+  const params = new URLSearchParams(window.location.search);
+
+  const room = params.get("room");
+  const code = params.get("code");
+
+  document.getElementById("room").textContent = room;
+
+  // ---- EXPIRY LOGIC ----
+
+  // Set checkout time (11:00 AM next day)
+  const now = new Date();
+
+  const checkout = new Date();
+  checkout.setDate(checkout.getDate() + 1);
+  checkout.setHours(11, 0, 0, 0);
+
+  if (now <= checkout) {
+    // Still valid
+    document.getElementById("code").textContent = code;
+  } else {
+    // Expired
+    document.getElementById("code").style.display = "none";
+    document.getElementById("expiredMessage").style.display = "block";
+  }
+</script>
+
 
 </body>
 </html>
+
