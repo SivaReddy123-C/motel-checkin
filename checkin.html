@@ -3,69 +3,87 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Verify Reservation</title>
+  <title>Confirm Check-in</title>
 
   <style>
     body {
-  font-family: Arial, sans-serif;
-  background-color: #f7f7f7;
-  margin: 0;
-  padding: 0;
-}
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 0;
+    }
 
-.container {
-  max-width: 400px;
-  margin: 60px auto;
-  background-color: #ffffff;
-  padding: 24px;
-  border-radius: 8px;
-  text-align: center;
-}
+    .container {
+      max-width: 400px;
+      margin: 60px auto;
+      background-color: #ffffff;
+      padding: 24px;
+      border-radius: 8px;
+      text-align: center;
+    }
 
-h1 {
-  font-size: 20px;
-  margin-bottom: 16px;
-}
+    h1 {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
 
-.ready {
-  font-size: 16px;
-  margin-bottom: 16px;
-}
+    .ready {
+      font-size: 16px;
+      margin-bottom: 16px;
+    }
 
-.datetime {
-  font-size: 14px;
-  margin-bottom: 24px;
-  color: #333;
-}
+    .datetime {
+      font-size: 14px;
+      margin-bottom: 20px;
+      color: #333;
+    }
 
-button {
-  width: 100%;
-  padding: 14px;
-  font-size: 16px;
-  background-color: #0071c2;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
+    .room-type {
+      text-align: left;
+      margin-bottom: 20px;
+      font-size: 15px;
+    }
 
-.help {
-  margin-top: 24px;
-  font-size: 14px;
-}
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      background-color: #0071c2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
+    .help {
+      margin-top: 24px;
+      font-size: 14px;
+    }
   </style>
 </head>
+
 <body>
 
-  <div class="container">
+<div class="container">
   <h1>Confirm your check-in</h1>
 
   <p class="ready">Your room is ready.</p>
 
   <div class="datetime">
-    Check-in for <strong>Tuesday, Sept 3</strong><br />
     Available from <strong>2:00 PM</strong>
+  </div>
+
+  <!-- ROOM TYPE SELECTION -->
+  <div class="room-type">
+    <label>
+      <input type="radio" name="roomType" value="single" checked>
+      Single Bed
+    </label>
+    <br><br>
+    <label>
+      <input type="radio" name="roomType" value="double">
+      Double Bed
+    </label>
   </div>
 
   <button onclick="confirmCheckin()">Confirm check-in</button>
@@ -75,17 +93,39 @@ button {
   </div>
 </div>
 
-  <script>
-    function confirmCheckin() {
-  const params = new URLSearchParams(window.location.search);
-  const room = params.get("room");
-  const code = params.get("code");
+<script>
+function confirmCheckin() {
+  // Get selected room type
+  const roomType = document.querySelector(
+    'input[name="roomType"]:checked'
+  ).value;
 
-  window.location.href = "access.html?room=" + room + "&code=" + code;
-;
+  // Load available rooms set by owner
+  const stored = JSON.parse(localStorage.getItem("availableRooms"));
+
+  if (!stored || !stored[roomType] || stored[roomType].length === 0) {
+    alert("No rooms available for this type. Please contact the desk.");
+    return;
+  }
+
+  // Randomly select a room
+  const rooms = stored[roomType];
+  const index = Math.floor(Math.random() * rooms.length);
+  const assignedRoom = rooms[index];
+
+  // Remove assigned room so it cannot be reused
+  rooms.splice(index, 1);
+  stored[roomType] = rooms;
+
+  // Save updated availability
+  localStorage.setItem("availableRooms", JSON.stringify(stored));
+
+  // Redirect to access page
+  window.location.href =
+    "access.html?room=" + assignedRoom + "&code=4829";
 }
-
-  </script>
+</script>
 
 </body>
 </html>
+
