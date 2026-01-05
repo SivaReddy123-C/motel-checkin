@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Owner – Update Available Rooms</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    textarea {
+      width: 100%;
+      height: 60px;
+      margin-top: 6px;
+      padding: 8px;
+      font-size: 14px;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background: #0071c2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .status {
+      margin-top: 16px;
+      color: green;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Update Available Rooms</h1>
+
+  <label>Single Bed Rooms (comma separated)</label>
+  <textarea id="singleRooms" placeholder="101, 103, 108"></textarea>
+
+  <label>Double Bed Rooms (comma separated)</label>
+  <textarea id="doubleRooms" placeholder="201, 204"></textarea>
+
+  <button onclick="saveRooms()">Save for Today</button>
+
+  <div class="status" id="status"></div>
+</div>
+
+<script>
+  // Load existing data if present
+  const saved = JSON.parse(localStorage.getItem("availableRooms"));
+  if (saved) {
+    document.getElementById("singleRooms").value = saved.single.join(", ");
+    document.getElementById("doubleRooms").value = saved.double.join(", ");
+  }
+
+  function saveRooms() {
+    const single = document
+      .getElementById("singleRooms")
+      .value
+      .split(",")
+      .map(r => r.trim())
+      .filter(Boolean);
+
+    const double = document
+      .getElementById("doubleRooms")
+      .value
+      .split(",")
+      .map(r => r.trim())
+      .filter(Boolean);
+
+    localStorage.setItem(
+      "availableRooms",
+      JSON.stringify({ single, double })
+    );
+
+    document.getElementById("status").textContent =
+      "Rooms saved successfully for today.";
+  }
+</script>
+
+</body>
+</html>
