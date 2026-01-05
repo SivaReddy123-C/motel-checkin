@@ -122,13 +122,29 @@ function confirmCheckin() {
   // Save updated availability
   localStorage.setItem("availableRooms", JSON.stringify(stored));
 
-  // Redirect to access page
+  // ✅ LOG CHECK-IN FOR ADMIN PAGE
+  const checkins = JSON.parse(localStorage.getItem("checkins")) || [];
+
+  checkins.push({
+    room: assignedRoom,
+    type: roomType,
+    time: new Date().toLocaleString(),
+    status: "Checked-in"
+  });
+
+  localStorage.setItem("checkins", JSON.stringify(checkins));
+
+  console.log("Checkins saved:", localStorage.getItem("checkins"));
+
+  // Redirect to access page (MUST BE LAST)
   window.location.href =
     "access.html?room=" + assignedRoom + "&code=4829";
 }
 </script>
 
+
 </body>
 </html>
+
 
 
